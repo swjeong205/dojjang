@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>도장 심리테스트</title>
+  <link href="https://fonts.googleapis.com/css2?family=Song+Myung&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Song Myung', serif; }
+    body { background: #f8f8f8; color: #222; padding: 2rem; text-align: center; }
+    .container { max-width: 600px; margin: auto; padding: 2rem; border: 2px solid #111; background: white; box-shadow: 4px 4px 0 #111; }
+    .question { margin: 2rem 0; font-size: 1.4rem; }
+    .option { display: block; margin: 1rem auto; padding: 1rem; background: black; color: white; width: 80%; cursor: pointer; }
+    .hidden { display: none; }
+    .result { font-size: 1.2rem; margin-top: 2rem; }
+    h1 { font-size: 2rem; margin-bottom: 1rem; }
+    .footer { margin-top: 2rem; font-size: 0.9rem; color: #777; }
+    img.intro { max-width: 100%; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="container" id="mainContainer">
+    <img src="assets/intro_comic.png" alt="인트로 만화" class="intro">
+    <img src="assets/title_text.png" alt="타이틀 이미지" class="intro">
+    <p id="introText">오직 도장팔이소녀들만이 치료해드릴 수 있습니다!<br>나에게 딱 맞는 도장 처방을 찾아 학관 14번 부스로 오세요...</p>
+    <button onclick="startTest()">시작하기</button>
+
+    <div id="quiz" class="hidden">
+      <div id="questionBox" class="question"></div>
+    </div>
+
+    <div id="resultBox" class="hidden">
+      <h2>결과</h2>
+      <div id="resultText" class="result"></div>
+    </div>
+
+    <div class="footer">© 도장팔이소녀들 심리테스트 | 대동제 특집</div>
+  </div>
+
+  <script>
+    const questions = [
+      ["시험 전날 밤 11시, 넌?", "A. PPT 켜놓고 눈만 깜빡", "B. 커피 내리고 요약 시작"],
+      ["팀플 발표 중 실수했다!", "A. 하얘짐 + 표정관리 실패", "B. 'ㅋㅋ 살았다'며 웃고 넘김"],
+      ["전단지를 받았다!", "A. 무조건 받고 '감사합니다'", "B. 스캔 후 무시 가능"],
+      ["축제 줄이 길다!", "A. 포기함", "B. 친구랑 순번 조절"],
+      ["주말 계획은?", "A. 이불 + 넷플릭스", "B. 브런치 → 공부 → 산책"],
+      ["단톡에서 번개 제안!", "A. 거절 방법 고민", "B. 'ㅇㅋ 몇 시 어디?' 즉시 탑승"]
+    ];
+
+    const results = {
+      "AA": {
+        title: "무념무상 벗",
+        text: "세상의 흐름에 몸을 맡긴 당신, 도장으로 위로 받는 타입입니다. 추천 도장: '눕고 싶다', '일단 멍...'"
+      },
+      "AB": {
+        title: "흘러가는 벗",
+        text: "피곤하지만 성실한 당신, 조용히 세상을 살아가는 타입입니다. 추천 도장: '정신차려 이대생', '오늘도 버텼다'"
+      },
+      "BA": {
+        title: "치여사는 벗",
+        text: "이성과 감성 사이에서 균형잡힌 당신! 추천 도장: '나 오늘 기특함', '해치웠다'"
+      },
+      "BB": {
+        title: "전투형 벗",
+        text: "계획과 전투력의 화신! 당신은 플래너에 도장을 줄 맞춰 찍는 타입입니다. 추천 도장: '빡집중냥', '기강 잡자'"
+      }
+    };
+
+    let currentQuestion = 0;
+    let scoreA = 0;
+    let scoreB = 0;
+
+    function startTest() {
+      document.getElementById("mainContainer").innerHTML = `
+        <div id="quiz">
+          <div id="questionBox" class="question"></div>
+        </div>
+        <div id="resultBox" class="hidden">
+          <h2>결과</h2>
+          <div id="resultText" class="result"></div>
+        </div>
+        <div class="footer">© 도장팔이소녀들 심리테스트 | 대동제 특집</div>
+      `;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById("questionBox").innerHTML =
+        `<p>${q[0]}</p>
+        <div class='option' onclick="selectAnswer('A')">${q[1]}</div>
+        <div class='option' onclick="selectAnswer('B')">${q[2]}</div>`;
+    }
+
+    function selectAnswer(answer) {
+      if (answer === "A") scoreA++;
+      else scoreB++;
+
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById("quiz").classList.add("hidden");
+      document.getElementById("resultBox").classList.remove("hidden");
+
+      const type = scoreA >= 5 ? "AA" : scoreA >= 3 ? "AB" : scoreB >= 5 ? "BB" : "BA";
+      const result = results[type];
+      document.getElementById("resultText").innerHTML = `<h3>${result.title}</h3><p>${result.text}</p>`;
+    }
+  </script>
+</body>
+</html>
